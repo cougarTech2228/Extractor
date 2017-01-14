@@ -26,7 +26,7 @@ public class FileInterface
 	{
 		try
 		{
-			CSVWriter writer = new CSVWriter(new FileWriter(filename));
+			CSVWriter writer = new CSVWriter(new FileWriter(filename, true));
 			writer.writeNext(data);
 			writer.close();
 			return true;

@@ -12,6 +12,7 @@ public class Scanner
 		qrFinder = new QRFinder(this);
 		Thread thread = new Thread(qrFinder);
 		thread.start();
+		qrFinder.changeWebcam(1);
 	}
 	
 	
@@ -19,5 +20,6 @@ public class Scanner
 	{
 		System.out.println(qrData);
 	}
+	
 	
 }
