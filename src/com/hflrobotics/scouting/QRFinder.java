@@ -22,14 +22,14 @@ public class QRFinder implements Runnable, ThreadFactory
 	private Executor executor = Executors.newSingleThreadExecutor(this);
 	private Webcam webcam = null;
 	public Result result = null;
+	Scanner scanner;
 
-	public QRFinder(int cameraNumber)
+	public QRFinder(Scanner scanner)
 	{
 		super();
-
+		this.scanner = scanner;
 		Dimension size = WebcamResolution.QVGA.getSize();
-
-		webcam = Webcam.getWebcams().get(cameraNumber);
+		webcam = Webcam.getDefault();
 		webcam.setViewSize(size);
 
 		executor.execute(this);
@@ -42,17 +42,16 @@ public class QRFinder implements Runnable, ThreadFactory
 	 * @param cameraNumber int of camera in webcam list
 	 * @param mainWebcam Sarxos Webcam
 	 **/
-	public void changeWebcam(int cameraNumber, Webcam mainWebcam)
+	public void changeWebcam(int cameraNumber)
 	{
-		if(cameraNumber < mainWebcam.getWebcams().size())
+		if(cameraNumber < Webcam.getWebcams().size())
 		{
-			webcam = mainWebcam.getWebcams().get(cameraNumber);
+			webcam = Webcam.getWebcams().get(cameraNumber);
 		}
 	}
 
 	public void run()
 	{
-
 		do
 		{
 			try
@@ -82,7 +81,7 @@ public class QRFinder implements Runnable, ThreadFactory
 				try
 				{
 					result = new MultiFormatReader().decode(bitmap);
-					System.out.println("QR: " + result);
+					scanner.qrDetected(result);
 				}
 				catch (NotFoundException e)
 				{
