@@ -11,6 +11,11 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import com.github.sarxos.webcam.Webcam;
+
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -27,15 +32,29 @@ public class GUI extends JFrame
 	private JTextField matchDataFile;
 	private JTextField pitDataFile;
 	private JTextField driverDataFile;
-	Main main;
+	JProgressBar transferProgress;
+	JButton btnSubmit;
+	JButton btnStop;
+	JButton btnClear;
+	JList currentDataList;
+	JComboBox cameraSelector;
+	private Extractor extractor;
 	
-	public GUI(Main main) 
+	public GUI() 
 	{
-		this.main = main;
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Extractor");
 		setSize(500, 300);
 		setResizable(false);
 		setVisible(true);
+		try
+		{
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		}
+		catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e)
+		{
+		}
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
@@ -54,22 +73,13 @@ public class GUI extends JFrame
 		currentDataListScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		dataTransfer.add(currentDataListScroll);
 		
-		JList currentDataList = new JList();
+		currentDataList = new JList();
 		currentDataList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		currentDataListScroll.setViewportView(currentDataList);
 		sl_dataTransfer.putConstraint(SpringLayout.NORTH, currentDataList, 10, SpringLayout.NORTH, dataTransfer);
 		sl_dataTransfer.putConstraint(SpringLayout.WEST, currentDataList, 197, SpringLayout.WEST, dataTransfer);
 		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, currentDataList, 159, SpringLayout.NORTH, dataTransfer);
 		sl_dataTransfer.putConstraint(SpringLayout.EAST, currentDataList, -129, SpringLayout.EAST, dataTransfer);
-		currentDataList.setModel(new AbstractListModel() {
-			String[] values = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
 		currentDataList.setBackground(SystemColor.info);
 		
 		JSeparator dataTransferSep = new JSeparator();
@@ -87,40 +97,78 @@ public class GUI extends JFrame
 		sl_dataTransfer.putConstraint(SpringLayout.EAST, lblCamera, 47, SpringLayout.EAST, dataTransferSep);
 		dataTransfer.add(lblCamera);
 		
-		JComboBox cameraSelector = new JComboBox();
-		cameraSelector.setModel(new DefaultComboBoxModel(new String[] {"Camera 1", "Camera 2"}));
+		cameraSelector = new JComboBox();
 		sl_dataTransfer.putConstraint(SpringLayout.NORTH, cameraSelector, 6, SpringLayout.SOUTH, lblCamera);
 		sl_dataTransfer.putConstraint(SpringLayout.WEST, cameraSelector, 6, SpringLayout.EAST, dataTransferSep);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, cameraSelector, 232, SpringLayout.EAST, dataTransferSep);
+		cameraSelector.setModel(new DefaultComboBoxModel(Webcam.getWebcams().toArray()));
 		dataTransfer.add(cameraSelector);
 		
-		JProgressBar transferProgress = new JProgressBar();
-		transferProgress.setIndeterminate(true);
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, transferProgress, 6, SpringLayout.SOUTH, cameraSelector);
+		transferProgress = new JProgressBar();
 		sl_dataTransfer.putConstraint(SpringLayout.WEST, transferProgress, 6, SpringLayout.EAST, dataTransferSep);
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, transferProgress, 44, SpringLayout.SOUTH, cameraSelector);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, transferProgress, 0, SpringLayout.EAST, cameraSelector);
+		sl_dataTransfer.putConstraint(SpringLayout.EAST, transferProgress, -10, SpringLayout.EAST, dataTransfer);
+		transferProgress.setIndeterminate(true);
 		dataTransfer.add(transferProgress);
 		
-		JButton btnSubmit = new JButton("Submit");
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnSubmit, 74, SpringLayout.SOUTH, transferProgress);
+		btnSubmit = new JButton("Submit");
 		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnSubmit, 6, SpringLayout.EAST, dataTransferSep);
+		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnSubmit, -10, SpringLayout.EAST, dataTransfer);
+		btnSubmit.setEnabled(false);
+		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnSubmit, 74, SpringLayout.SOUTH, transferProgress);
 		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, btnSubmit, -10, SpringLayout.SOUTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnSubmit, 0, SpringLayout.EAST, cameraSelector);
 		dataTransfer.add(btnSubmit);
 		
-		JButton btnStop = new JButton("Stop");
+		btnStop = new JButton("Stop");
 		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnStop, 6, SpringLayout.EAST, dataTransferSep);
+		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnStop, -10, SpringLayout.EAST, dataTransfer);
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				extractor.state = "complete";
+				btnStop.setEnabled(false);
+				btnSubmit.setEnabled(true);
+				btnClear.setEnabled(true);
+			}
+		});
+		btnStop.setEnabled(false);
 		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, btnStop, -6, SpringLayout.NORTH, btnSubmit);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnStop, 0, SpringLayout.EAST, cameraSelector);
 		dataTransfer.add(btnStop);
 		
-		JButton btnClear = new JButton("Clear");
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnStop, 6, SpringLayout.SOUTH, btnClear);
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnClear, 6, SpringLayout.SOUTH, transferProgress);
+		btnClear = new JButton("Clear");
+		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, transferProgress, -6, SpringLayout.NORTH, btnClear);
+		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnClear, 102, SpringLayout.NORTH, dataTransfer);
 		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnClear, 6, SpringLayout.EAST, dataTransferSep);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnClear, 0, SpringLayout.EAST, cameraSelector);
+		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnClear, -10, SpringLayout.EAST, dataTransfer);
+		btnClear.addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent arg0) {
+				btnClear.setEnabled(false);
+				btnStop.setEnabled(false);
+				btnSubmit.setEnabled(false);
+				transferProgress.setIndeterminate(true);
+				currentDataList.setListData(new String[]{});
+				
+				extractor.state = "searching";
+				extractor.data.clear();
+				extractor.matchData.clear();
+				extractor.pitData.clear();
+				extractor.driverData.clear();
+			}
+		});
+		btnClear.setEnabled(false);
+		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnStop, 6, SpringLayout.SOUTH, btnClear);
 		dataTransfer.add(btnClear);
+		
+		JButton btnNewButton = new JButton("\u21BB");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateCameraList();
+			}
+		});
+		sl_dataTransfer.putConstraint(SpringLayout.NORTH, transferProgress, 4, SpringLayout.SOUTH, btnNewButton);
+		sl_dataTransfer.putConstraint(SpringLayout.EAST, cameraSelector, -6, SpringLayout.WEST, btnNewButton);
+		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnNewButton, -1, SpringLayout.NORTH, cameraSelector);
+		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnNewButton, -43, SpringLayout.EAST, transferProgress);
+		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnNewButton, 0, SpringLayout.EAST, transferProgress);
+		dataTransfer.add(btnNewButton);
 		
 		JPanel dataFilesPanel = new JPanel();
 		tabbedPane.addTab("Data Files", null, dataFilesPanel, null);
@@ -192,5 +240,17 @@ public class GUI extends JFrame
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, driverDataBtn, 412, SpringLayout.WEST, dataFilesPanel);
 		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, driverDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
 		dataFilesPanel.add(driverDataBtn);
+	}
+	
+	
+	public void updateCameraList()
+	{
+		cameraSelector.setModel(new DefaultComboBoxModel(Webcam.getWebcams().toArray()));
+	}
+	
+	
+	public void passExtractor(Extractor extractor)
+	{
+		this.extractor = extractor;
 	}
 }
