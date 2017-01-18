@@ -32,9 +32,9 @@ import java.awt.SystemColor;
 
 public class GUI extends JFrame
 {
-	private JTextField matchDataFile;
-	private JTextField pitDataFile;
-	private JTextField driverDataFile;
+	JTextField matchDataFile;
+	JTextField pitDataFile;
+	JTextField driverDataFile;
 	JProgressBar transferProgress;
 	JButton btnSubmit;
 	JButton btnStop;
@@ -119,6 +119,11 @@ public class GUI extends JFrame
 		dataTransfer.add(transferProgress);
 		
 		btnSubmit = new JButton("Submit");
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				extractor.writeAllData();
+			}
+		});
 		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnSubmit, 6, SpringLayout.EAST, dataTransferSep);
 		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnSubmit, -10, SpringLayout.EAST, dataTransfer);
 		btnSubmit.setEnabled(false);
