@@ -80,7 +80,6 @@ public class Extractor implements Runnable, ThreadFactory
 			JOptionPane.showMessageDialog(null, "Webcam is locked. Please restart Extractor.");
 		}
 		
-		
 		if(webcam.isOpen())
 		{		
 			if ((image = webcam.getImage()) != null)
