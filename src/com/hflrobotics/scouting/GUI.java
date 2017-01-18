@@ -13,16 +13,19 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.github.sarxos.webcam.Webcam;
 
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JProgressBar;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.ListSelectionModel;
 import java.awt.SystemColor;
@@ -39,6 +42,10 @@ public class GUI extends JFrame
 	JList currentDataList;
 	JComboBox<Webcam> cameraSelector;
 	private Extractor extractor;
+	private JButton matchDataBtn;
+	private JFrame frame;
+	
+	private File currentDirectory = null;
 	
 	public GUI() 
 	{
@@ -47,6 +54,8 @@ public class GUI extends JFrame
 		setSize(500, 300);
 		setResizable(false);
 		setVisible(true);
+		frame = this;
+		
 		try
 		{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -189,15 +198,17 @@ public class GUI extends JFrame
 		dataFilesPanel.add(matchDataFile);
 		matchDataFile.setColumns(10);
 		
-		JButton matchDataBtn = new JButton("...");
+		matchDataBtn = new JButton("...");
+		matchDataBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chooseFile(matchDataFile);
+			}
+		});
 		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, matchDataBtn, 30, SpringLayout.NORTH, dataFilesPanel);
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, matchDataBtn, 6, SpringLayout.EAST, matchDataFile);
 		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, matchDataBtn, 0, SpringLayout.SOUTH, matchDataFile);
 		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, matchDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
-		matchDataBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		
 		dataFilesPanel.add(matchDataBtn);
 		
 		JLabel lblNewLabel = new JLabel("Pit Data [CSV]");
@@ -215,6 +226,11 @@ public class GUI extends JFrame
 		pitDataFile.setColumns(10);
 		
 		JButton pitDataBtn = new JButton("...");
+		pitDataBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chooseFile(pitDataFile);
+			}
+		});
 		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, pitDataBtn, 0, SpringLayout.NORTH, pitDataFile);
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, pitDataBtn, 0, SpringLayout.WEST, matchDataBtn);
 		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, pitDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
@@ -225,12 +241,18 @@ public class GUI extends JFrame
 		dataFilesPanel.add(lblDriverDatacsv);
 		
 		driverDataFile = new JTextField();
+		driverDataFile.setEditable(false);
 		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, lblDriverDatacsv, -6, SpringLayout.NORTH, driverDataFile);
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, driverDataFile, 10, SpringLayout.WEST, dataFilesPanel);
 		dataFilesPanel.add(driverDataFile);
 		driverDataFile.setColumns(10);
 		
 		JButton driverDataBtn = new JButton("...");
+		driverDataBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chooseFile(driverDataFile);
+			}
+		});
 		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, pitDataBtn, -46, SpringLayout.NORTH, driverDataBtn);
 		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, driverDataBtn, 193, SpringLayout.NORTH, dataFilesPanel);
 		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, driverDataBtn, -10, SpringLayout.SOUTH, dataFilesPanel);
@@ -241,11 +263,26 @@ public class GUI extends JFrame
 		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, driverDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
 		dataFilesPanel.add(driverDataBtn);
 	}
+
+	
+	private void chooseFile(JTextField field)
+	{
+		final JFileChooser fc = new JFileChooser(currentDirectory);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setFileFilter(new FileNameExtensionFilter("Comma-separated values file (*.csv)", "csv"));
+		
+		if(fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
+		{
+			field.setText(fc.getSelectedFile().toString());
+			currentDirectory = fc.getSelectedFile().getParentFile();
+		}
+	}
 	
 	
 	public void updateCameraList()
 	{
-		cameraSelector.setModel(new DefaultComboBoxModel(Webcam.getWebcams().toArray()));
+		cameraSelector.setModel(new DefaultComboBoxModel<Webcam>((Webcam[]) Webcam.getWebcams().toArray()));
 	}
 	
 	
