@@ -37,7 +37,7 @@ public class GUI extends JFrame
 	JButton btnStop;
 	JButton btnClear;
 	JList currentDataList;
-	JComboBox cameraSelector;
+	JComboBox<Webcam> cameraSelector;
 	private Extractor extractor;
 	
 	public GUI() 
