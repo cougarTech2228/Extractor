@@ -65,6 +65,8 @@ public class Extractor implements Runnable, ThreadFactory
 			
 			// prevent this from endless looping until problem is solved, enables btnClear to go back to "searching"
 			state = "complete";
+			gui.transferProgress.setIndeterminate(false);
+			gui.transferProgress.setValue(0);
 			gui.btnClear.setEnabled(true);
 			return null;
 		}
