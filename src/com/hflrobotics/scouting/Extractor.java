@@ -58,13 +58,24 @@ public class Extractor implements Runnable, ThreadFactory
 	{
 		Webcam webcam = null;
 
+		
+		if(gui.cameraSelector.getSelectedIndex() == -1)
+		{
+			JOptionPane.showMessageDialog(null, "No webcam is connected. Please connect one.");
+			
+			// prevent this from endless looping until problem is solved, enables btnClear to go back to "searching"
+			state = "complete";
+			gui.btnClear.setEnabled(true);
+			return null;
+		}
+		
 		try
 		{
 			webcam = Webcam.getWebcams().get(gui.cameraSelector.getSelectedIndex());
 		}
 		catch(IndexOutOfBoundsException ex)
 		{
-			gui.updateCameraList();
+			gui.updateCameraList();  // should fix the camera missing problem
 			webcam = Webcam.getWebcams().get(gui.cameraSelector.getSelectedIndex());
 		}
 		
