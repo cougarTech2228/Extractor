@@ -23,6 +23,7 @@ public class Extractor implements Runnable, ThreadFactory
 {
 
 	private Executor executor = Executors.newSingleThreadExecutor(this);
+	private FileInterface fileInterface = new FileInterface();
 	private GUI gui;
 	public String state = "searching";
 	private int total = 0;
@@ -41,6 +42,45 @@ public class Extractor implements Runnable, ThreadFactory
 		executor.execute(this);
 	}
 
+	
+	public void writeAllData()
+	{
+		// check if all files are specified, these fields are only be set by a CSV only FileChooser
+		if(gui.matchDataFile.getText().length() > 0 && gui.pitDataFile.getText().length() > 0  && gui.driverDataFile.getText().length() > 0)
+		{
+			for(String entry : matchData)
+			{
+				fileInterface.writeToCSV(gui.matchDataFile.getText(), entry.split(","));
+			}
+			
+			for(String entry : pitData)
+			{
+				fileInterface.writeToCSV(gui.pitDataFile.getText(), entry.split(","));
+			}
+			
+			for(String entry : driverData)
+			{
+				fileInterface.writeToCSV(gui.driverDataFile.getText(), entry.split(","));
+			}
+			
+			gui.btnClear.setEnabled(false);
+			gui.btnStop.setEnabled(false);
+			gui.btnSubmit.setEnabled(false);
+			gui.transferProgress.setIndeterminate(true);
+			gui.currentDataList.setListData(new String[]{});
+			
+			state = "searching";
+			data.clear();
+			matchData.clear();
+			pitData.clear();
+			driverData.clear();
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "Specify all data files and retry.");
+		}
+	}
+	
 	
 	private void closeAllWebcamsExcept(Webcam webcam)
 	{
