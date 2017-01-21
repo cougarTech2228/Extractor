@@ -174,7 +174,6 @@ public class Extractor implements Runnable, ThreadFactory
 			{
 				e.printStackTrace();
 			}
-			System.out.println(state);
 			
 			switch(state)
 			{
@@ -184,7 +183,6 @@ public class Extractor implements Runnable, ThreadFactory
 					 * pre-condition: gui.btnClear - disabled, gui.btnSubmit - disabled, gui.transferProgress indeterminate
 					 */
 					result = getQRFromWebcam();
-					System.out.print("-");
 					
 					if(result != null)
 					{
