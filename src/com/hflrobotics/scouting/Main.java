@@ -2,11 +2,9 @@ package com.hflrobotics.scouting;
 
 public class Main
 {
-	
-	// static Scanner scanner = new Scanner();
+
 	static GUI gui;
 	static Extractor extractor;
-	// static FileInterface files = new FileInterface();
 	
 	public static void main(String[] args)
 	{
