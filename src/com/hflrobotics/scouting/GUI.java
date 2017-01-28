@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.AbstractListModel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -26,6 +27,8 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.ListSelectionModel;
 import java.awt.SystemColor;
@@ -35,6 +38,7 @@ public class GUI extends JFrame
 	JTextField matchDataFile;
 	JTextField pitDataFile;
 	JTextField driverDataFile;
+	JTextField teamDataFile;
 	JProgressBar transferProgress;
 	JButton btnSubmit;
 	JButton btnStop;
@@ -46,6 +50,7 @@ public class GUI extends JFrame
 	private JFrame frame;
 	
 	private File currentDirectory = null;
+	private JTextField eventKey;
 	
 	public GUI() 
 	{
@@ -184,6 +189,55 @@ public class GUI extends JFrame
 		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnNewButton, 0, SpringLayout.EAST, transferProgress);
 		dataTransfer.add(btnNewButton);
 		
+		JPanel blueAlliancePanel = new JPanel();
+		tabbedPane.addTab("Blue Alliance Data", null, blueAlliancePanel, null);
+		SpringLayout sl_blueAlliancePanel = new SpringLayout();
+		blueAlliancePanel.setLayout(sl_blueAlliancePanel);
+		
+		JLabel eventKeyLbl = new JLabel("Event Key [YYYY(EVENT_CODE)]");
+		sl_blueAlliancePanel.putConstraint(SpringLayout.NORTH, eventKeyLbl, 10, SpringLayout.NORTH, blueAlliancePanel);
+		sl_blueAlliancePanel.putConstraint(SpringLayout.WEST, eventKeyLbl, 10, SpringLayout.WEST, blueAlliancePanel);
+		blueAlliancePanel.add(eventKeyLbl);
+		
+		eventKey = new JTextField();
+		sl_blueAlliancePanel.putConstraint(SpringLayout.NORTH, eventKey, 6, SpringLayout.SOUTH, eventKeyLbl);
+		sl_blueAlliancePanel.putConstraint(SpringLayout.WEST, eventKey, 10, SpringLayout.WEST, blueAlliancePanel);
+		sl_blueAlliancePanel.putConstraint(SpringLayout.SOUTH, eventKey, -180, SpringLayout.SOUTH, blueAlliancePanel);
+		sl_blueAlliancePanel.putConstraint(SpringLayout.EAST, eventKey, -322, SpringLayout.EAST, blueAlliancePanel);
+		blueAlliancePanel.add(eventKey);
+		eventKey.setColumns(10);
+		
+		JButton blueAllianceGetBtn = new JButton("Get Data");
+		blueAllianceGetBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try
+				{
+					ArrayList<Team> teams = new ArrayList<Team>();
+					Scraper.getOPRs(eventKey.getText(), teams);
+					Scraper.getRankings(eventKey.getText(), teams);
+					ArrayList<String[]> data = Scraper.getCSVWriteableData(teams);
+					
+					for(String[] entry : data)
+					{
+						FileInterface.writeToCSV(teamDataFile.getText(), entry);
+					}
+					
+					JOptionPane.showMessageDialog(null, "Data retrieved, file written to.");
+				}
+				catch(IOException ex)
+				{
+					JOptionPane.showMessageDialog(null, "Error in connection or event key.");
+				}
+				
+				
+			}
+		});
+		sl_blueAlliancePanel.putConstraint(SpringLayout.NORTH, blueAllianceGetBtn, 6, SpringLayout.SOUTH, eventKey);
+		sl_blueAlliancePanel.putConstraint(SpringLayout.WEST, blueAllianceGetBtn, 0, SpringLayout.WEST, eventKeyLbl);
+		sl_blueAlliancePanel.putConstraint(SpringLayout.SOUTH, blueAllianceGetBtn, -141, SpringLayout.SOUTH, blueAlliancePanel);
+		sl_blueAlliancePanel.putConstraint(SpringLayout.EAST, blueAllianceGetBtn, 0, SpringLayout.EAST, eventKeyLbl);
+		blueAlliancePanel.add(blueAllianceGetBtn);
+		
 		JPanel dataFilesPanel = new JPanel();
 		tabbedPane.addTab("Data Files", null, dataFilesPanel, null);
 		SpringLayout sl_dataFilesPanel = new SpringLayout();
@@ -197,76 +251,102 @@ public class GUI extends JFrame
 		matchDataFile = new JTextField();
 		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, matchDataFile, 6, SpringLayout.SOUTH, lblMatchDatacsv);
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, matchDataFile, 10, SpringLayout.WEST, dataFilesPanel);
-		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, matchDataFile, -173, SpringLayout.SOUTH, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, matchDataFile, -184, SpringLayout.SOUTH, dataFilesPanel);
 		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, matchDataFile, -83, SpringLayout.EAST, dataFilesPanel);
 		matchDataFile.setEditable(false);
 		dataFilesPanel.add(matchDataFile);
 		matchDataFile.setColumns(10);
 		
 		matchDataBtn = new JButton("...");
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, matchDataBtn, 30, SpringLayout.NORTH, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, matchDataBtn, 6, SpringLayout.EAST, matchDataFile);
+		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, matchDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
 		matchDataBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				chooseFile(matchDataFile);
 			}
 		});
-		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, matchDataBtn, 30, SpringLayout.NORTH, dataFilesPanel);
-		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, matchDataBtn, 6, SpringLayout.EAST, matchDataFile);
-		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, matchDataBtn, 0, SpringLayout.SOUTH, matchDataFile);
-		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, matchDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
 		
 		dataFilesPanel.add(matchDataBtn);
 		
 		JLabel lblNewLabel = new JLabel("Pit Data [CSV]");
-		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, lblNewLabel, 17, SpringLayout.SOUTH, matchDataFile);
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, lblNewLabel, 6, SpringLayout.SOUTH, matchDataFile);
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, lblNewLabel, 0, SpringLayout.WEST, lblMatchDatacsv);
 		dataFilesPanel.add(lblNewLabel);
 		
 		pitDataFile = new JTextField();
 		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, pitDataFile, 6, SpringLayout.SOUTH, lblNewLabel);
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, pitDataFile, 0, SpringLayout.WEST, lblMatchDatacsv);
-		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, pitDataFile, -96, SpringLayout.SOUTH, dataFilesPanel);
-		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, pitDataFile, -83, SpringLayout.EAST, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, pitDataFile, -129, SpringLayout.SOUTH, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, pitDataFile, 0, SpringLayout.EAST, matchDataFile);
 		pitDataFile.setEditable(false);
 		dataFilesPanel.add(pitDataFile);
 		pitDataFile.setColumns(10);
 		
 		JButton pitDataBtn = new JButton("...");
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, pitDataBtn, 85, SpringLayout.NORTH, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, matchDataBtn, -26, SpringLayout.NORTH, pitDataBtn);
+		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, pitDataBtn, 0, SpringLayout.WEST, matchDataBtn);
+		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, pitDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
 		pitDataBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				chooseFile(pitDataFile);
 			}
 		});
-		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, pitDataBtn, 0, SpringLayout.NORTH, pitDataFile);
-		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, pitDataBtn, 0, SpringLayout.WEST, matchDataBtn);
-		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, pitDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
 		dataFilesPanel.add(pitDataBtn);
 		
 		JLabel lblDriverDatacsv = new JLabel("Driver Data [CSV]");
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, lblDriverDatacsv, 6, SpringLayout.SOUTH, pitDataFile);
 		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, lblDriverDatacsv, 0, SpringLayout.EAST, lblMatchDatacsv);
 		dataFilesPanel.add(lblDriverDatacsv);
 		
 		driverDataFile = new JTextField();
-		driverDataFile.setEditable(false);
-		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, lblDriverDatacsv, -6, SpringLayout.NORTH, driverDataFile);
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, driverDataFile, 6, SpringLayout.SOUTH, lblDriverDatacsv);
 		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, driverDataFile, 10, SpringLayout.WEST, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, driverDataFile, -74, SpringLayout.SOUTH, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, driverDataFile, 0, SpringLayout.EAST, matchDataFile);
+		driverDataFile.setEditable(false);
 		dataFilesPanel.add(driverDataFile);
 		driverDataFile.setColumns(10);
 		
 		JButton driverDataBtn = new JButton("...");
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, pitDataBtn, -26, SpringLayout.NORTH, driverDataBtn);
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, driverDataBtn, -74, SpringLayout.SOUTH, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, driverDataBtn, 0, SpringLayout.NORTH, driverDataFile);
+		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, driverDataBtn, 412, SpringLayout.WEST, dataFilesPanel);
+		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, driverDataBtn, 0, SpringLayout.EAST, matchDataBtn);
 		driverDataBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				chooseFile(driverDataFile);
 			}
 		});
-		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, pitDataBtn, -46, SpringLayout.NORTH, driverDataBtn);
-		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, driverDataBtn, 193, SpringLayout.NORTH, dataFilesPanel);
-		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, driverDataBtn, -10, SpringLayout.SOUTH, dataFilesPanel);
-		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, driverDataFile, 0, SpringLayout.NORTH, driverDataBtn);
-		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, driverDataFile, 0, SpringLayout.SOUTH, driverDataBtn);
-		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, driverDataFile, -6, SpringLayout.WEST, driverDataBtn);
-		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, driverDataBtn, 412, SpringLayout.WEST, dataFilesPanel);
-		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, driverDataBtn, -10, SpringLayout.EAST, dataFilesPanel);
 		dataFilesPanel.add(driverDataBtn);
+		
+		JLabel lblTeamDatacsv = new JLabel("Team Data [CSV]");
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, lblTeamDatacsv, 6, SpringLayout.SOUTH, driverDataFile);
+		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, lblTeamDatacsv, 0, SpringLayout.WEST, lblMatchDatacsv);
+		dataFilesPanel.add(lblTeamDatacsv);
+		
+		teamDataFile = new JTextField();
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, teamDataFile, 6, SpringLayout.SOUTH, lblTeamDatacsv);
+		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, teamDataFile, 0, SpringLayout.WEST, lblMatchDatacsv);
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, teamDataFile, 35, SpringLayout.SOUTH, lblTeamDatacsv);
+		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, teamDataFile, 0, SpringLayout.EAST, matchDataFile);
+		teamDataFile.setEditable(false);
+		teamDataFile.setColumns(10);
+		dataFilesPanel.add(teamDataFile);
+		
+		JButton teamDataBtn = new JButton("...");
+		teamDataBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				chooseFile(teamDataFile);
+			}
+		});
+		sl_dataFilesPanel.putConstraint(SpringLayout.NORTH, teamDataBtn, 0, SpringLayout.NORTH, teamDataFile);
+		sl_dataFilesPanel.putConstraint(SpringLayout.WEST, teamDataBtn, 0, SpringLayout.WEST, matchDataBtn);
+		sl_dataFilesPanel.putConstraint(SpringLayout.SOUTH, teamDataBtn, 0, SpringLayout.SOUTH, teamDataFile);
+		sl_dataFilesPanel.putConstraint(SpringLayout.EAST, teamDataBtn, 0, SpringLayout.EAST, matchDataBtn);
+		dataFilesPanel.add(teamDataBtn);
 	}
 
 	
