@@ -23,7 +23,6 @@ public class Extractor implements Runnable, ThreadFactory
 {
 
 	private Executor executor = Executors.newSingleThreadExecutor(this);
-	private FileInterface fileInterface = new FileInterface();
 	private GUI gui;
 	public String state = "searching";
 	private int total = 0;
@@ -50,17 +49,17 @@ public class Extractor implements Runnable, ThreadFactory
 		{
 			for(String entry : matchData)
 			{
-				fileInterface.writeToCSV(gui.matchDataFile.getText(), entry.split(","));
+				FileInterface.writeToCSV(gui.matchDataFile.getText(), entry.split(","));
 			}
 			
 			for(String entry : pitData)
 			{
-				fileInterface.writeToCSV(gui.pitDataFile.getText(), entry.split(","));
+				FileInterface.writeToCSV(gui.pitDataFile.getText(), entry.split(","));
 			}
 			
 			for(String entry : driverData)
 			{
-				fileInterface.writeToCSV(gui.driverDataFile.getText(), entry.split(","));
+				FileInterface.writeToCSV(gui.driverDataFile.getText(), entry.split(","));
 			}
 			
 			gui.btnClear.setEnabled(false);

@@ -3,6 +3,8 @@ package com.hflrobotics.scouting;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import com.opencsv.CSVWriter;
 
 public class FileInterface
@@ -22,7 +24,7 @@ public class FileInterface
 	 * @param data array of Strings containing each new value
 	 * @return true - on completion, false - on failure
 	 */
-	public boolean writeToCSV(String filename, String[] data)
+	public static boolean writeToCSV(String filename, String[] data)
 	{
 		try
 		{
@@ -33,7 +35,7 @@ public class FileInterface
 		}
 		catch(IOException ex)
 		{
-			ex.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Unable to access file.");
 			return false;
 		}
 	}	
