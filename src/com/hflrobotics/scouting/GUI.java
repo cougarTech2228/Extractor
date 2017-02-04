@@ -17,6 +17,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.github.sarxos.webcam.Webcam;
+import com.hflrobotics.scouting.scraper.Scraper;
+import com.hflrobotics.scouting.scraper.Team;
 
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
@@ -36,6 +38,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class GUI extends JFrame
 {
@@ -54,6 +58,8 @@ public class GUI extends JFrame
 	private JFrame frame;
 	
 	private File currentDirectory = null;
+	private JTable table;
+	private JTable table_1;
 	
 	public GUI() 
 	{
@@ -129,73 +135,175 @@ public class GUI extends JFrame
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		JPanel dataTransfer = new JPanel();
-		tabbedPane.addTab("Data Transfer", null, dataTransfer, null);
-		SpringLayout sl_dataTransfer = new SpringLayout();
-		dataTransfer.setLayout(sl_dataTransfer);
+		JPanel managerPanel = new JPanel();
+		tabbedPane.addTab("Manager", null, managerPanel, null);
+		SpringLayout sl_managerPanel = new SpringLayout();
+		managerPanel.setLayout(sl_managerPanel);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane, 258, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane, -10, SpringLayout.SOUTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane, -10, SpringLayout.EAST, managerPanel);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		managerPanel.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, table, 10, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, table, 56, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, table, 212, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, table, -291, SpringLayout.EAST, managerPanel);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"1", "2228", "3750", "340", "3003", "20", "120"},
+				{"2", "2228", "3750", "340", "3003", "20", "120"},
+				{"3", "2228", "3750", "340", "3003", "20", "120"},
+			},
+			new String[] {
+				"M", "R1", "R2", "R3", "B1", "B2", "B3"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, String.class, String.class, String.class, String.class, String.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane_1, 10, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane_1, -10, SpringLayout.SOUTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane_1, -6, SpringLayout.WEST, scrollPane);
+		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		managerPanel.add(scrollPane_1);
+		
+		JLabel lblSchedule = new JLabel("Schedule:");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane, 6, SpringLayout.SOUTH, lblSchedule);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblSchedule, 0, SpringLayout.WEST, scrollPane);
+		managerPanel.add(lblSchedule);
+		
+		JLabel lblTablets = new JLabel("Tablets:");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane_1, 6, SpringLayout.SOUTH, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblSchedule, 0, SpringLayout.NORTH, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, lblTablets, -198, SpringLayout.SOUTH, managerPanel);
+		
+		table_1 = new JTable();
+		table_1.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+			},
+			new String[] {
+				"", "ID", "Battery", "Team", "Match"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Object.class, String.class, String.class, String.class, Integer.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table_1.getColumnModel().getColumn(0).setResizable(false);
+		table_1.getColumnModel().getColumn(0).setPreferredWidth(15);
+		table_1.getColumnModel().getColumn(0).setMaxWidth(15);
+		table_1.getColumnModel().getColumn(1).setResizable(false);
+		table_1.getColumnModel().getColumn(2).setResizable(false);
+		table_1.getColumnModel().getColumn(3).setResizable(false);
+		table_1.getColumnModel().getColumn(4).setResizable(false);
+		scrollPane_1.setViewportView(table_1);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblTablets, 10, SpringLayout.WEST, managerPanel);
+		managerPanel.add(lblTablets);
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(30);
+		table.getColumnModel().getColumn(0).setMinWidth(30);
+		table.getColumnModel().getColumn(0).setMaxWidth(30);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(3).setResizable(false);
+		table.getColumnModel().getColumn(4).setResizable(false);
+		table.getColumnModel().getColumn(5).setResizable(false);
+		table.getColumnModel().getColumn(6).setResizable(false);
+		
+		JPanel dataTransferPanel = new JPanel();
+		tabbedPane.addTab("Data Transfer", null, dataTransferPanel, null);
+		SpringLayout sl_dataTransferPanel = new SpringLayout();
+		dataTransferPanel.setLayout(sl_dataTransferPanel);
 		
 		JScrollPane currentDataListScroll = new JScrollPane();
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, currentDataListScroll, 10, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, currentDataListScroll, 10, SpringLayout.WEST, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, currentDataListScroll, 212, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, currentDataListScroll, 240, SpringLayout.WEST, dataTransfer);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, currentDataListScroll, 10, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, currentDataListScroll, 10, SpringLayout.WEST, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.SOUTH, currentDataListScroll, 212, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, currentDataListScroll, 240, SpringLayout.WEST, dataTransferPanel);
 		currentDataListScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		currentDataListScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		dataTransfer.add(currentDataListScroll);
+		dataTransferPanel.add(currentDataListScroll);
 		
 		currentDataList = new JList();
 		currentDataList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		currentDataListScroll.setViewportView(currentDataList);
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, currentDataList, 10, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, currentDataList, 197, SpringLayout.WEST, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, currentDataList, 159, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, currentDataList, -129, SpringLayout.EAST, dataTransfer);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, currentDataList, 10, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, currentDataList, 197, SpringLayout.WEST, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.SOUTH, currentDataList, 159, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, currentDataList, -129, SpringLayout.EAST, dataTransferPanel);
 		currentDataList.setBackground(SystemColor.info);
 		
 		JSeparator dataTransferSep = new JSeparator();
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, dataTransferSep, 10, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, dataTransferSep, 6, SpringLayout.EAST, currentDataListScroll);
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, dataTransferSep, 11, SpringLayout.SOUTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, dataTransferSep, -242, SpringLayout.EAST, dataTransfer);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, dataTransferSep, 10, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, dataTransferSep, 6, SpringLayout.EAST, currentDataListScroll);
+		sl_dataTransferPanel.putConstraint(SpringLayout.SOUTH, dataTransferSep, 11, SpringLayout.SOUTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, dataTransferSep, -242, SpringLayout.EAST, dataTransferPanel);
 		dataTransferSep.setOrientation(SwingConstants.VERTICAL);
-		dataTransfer.add(dataTransferSep);
+		dataTransferPanel.add(dataTransferSep);
 		
 		JLabel lblCamera = new JLabel("Camera:");
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, lblCamera, 12, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, lblCamera, 253, SpringLayout.WEST, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, lblCamera, 47, SpringLayout.EAST, dataTransferSep);
-		dataTransfer.add(lblCamera);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, lblCamera, 12, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, lblCamera, 253, SpringLayout.WEST, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, lblCamera, 47, SpringLayout.EAST, dataTransferSep);
+		dataTransferPanel.add(lblCamera);
 		
 		cameraSelector = new JComboBox();
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, cameraSelector, 32, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, lblCamera, -6, SpringLayout.NORTH, cameraSelector);
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, cameraSelector, 6, SpringLayout.EAST, dataTransferSep);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, cameraSelector, 32, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.SOUTH, lblCamera, -6, SpringLayout.NORTH, cameraSelector);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, cameraSelector, 6, SpringLayout.EAST, dataTransferSep);
 		cameraSelector.setModel(new DefaultComboBoxModel(Webcam.getWebcams().toArray()));
-		dataTransfer.add(cameraSelector);
+		dataTransferPanel.add(cameraSelector);
 		
 		transferProgress = new JProgressBar();
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, transferProgress, 6, SpringLayout.EAST, dataTransferSep);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, transferProgress, -10, SpringLayout.EAST, dataTransfer);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, transferProgress, 6, SpringLayout.EAST, dataTransferSep);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, transferProgress, -10, SpringLayout.EAST, dataTransferPanel);
 		transferProgress.setIndeterminate(true);
-		dataTransfer.add(transferProgress);
+		dataTransferPanel.add(transferProgress);
 		
 		btnSubmit = new JButton("Submit");
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, btnSubmit, 0, SpringLayout.SOUTH, currentDataListScroll);
+		sl_dataTransferPanel.putConstraint(SpringLayout.SOUTH, btnSubmit, 0, SpringLayout.SOUTH, currentDataListScroll);
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				extractor.writeAllData();
 			}
 		});
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnSubmit, 6, SpringLayout.EAST, dataTransferSep);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnSubmit, -10, SpringLayout.EAST, dataTransfer);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, btnSubmit, 6, SpringLayout.EAST, dataTransferSep);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, btnSubmit, -10, SpringLayout.EAST, dataTransferPanel);
 		btnSubmit.setEnabled(false);
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnSubmit, 74, SpringLayout.SOUTH, transferProgress);
-		dataTransfer.add(btnSubmit);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, btnSubmit, 74, SpringLayout.SOUTH, transferProgress);
+		dataTransferPanel.add(btnSubmit);
 		
 		btnStop = new JButton("Stop");
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnStop, 6, SpringLayout.EAST, dataTransferSep);
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, btnStop, -6, SpringLayout.NORTH, btnSubmit);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnStop, -10, SpringLayout.EAST, dataTransfer);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, btnStop, 6, SpringLayout.EAST, dataTransferSep);
+		sl_dataTransferPanel.putConstraint(SpringLayout.SOUTH, btnStop, -6, SpringLayout.NORTH, btnSubmit);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, btnStop, -10, SpringLayout.EAST, dataTransferPanel);
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				extractor.state = "complete";
@@ -205,14 +313,14 @@ public class GUI extends JFrame
 			}
 		});
 		btnStop.setEnabled(false);
-		dataTransfer.add(btnStop);
+		dataTransferPanel.add(btnStop);
 		
 		btnClear = new JButton("Clear");
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnStop, 6, SpringLayout.SOUTH, btnClear);
-		sl_dataTransfer.putConstraint(SpringLayout.SOUTH, transferProgress, -6, SpringLayout.NORTH, btnClear);
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnClear, 102, SpringLayout.NORTH, dataTransfer);
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnClear, 6, SpringLayout.EAST, dataTransferSep);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnClear, -10, SpringLayout.EAST, dataTransfer);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, btnStop, 6, SpringLayout.SOUTH, btnClear);
+		sl_dataTransferPanel.putConstraint(SpringLayout.SOUTH, transferProgress, -6, SpringLayout.NORTH, btnClear);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, btnClear, 102, SpringLayout.NORTH, dataTransferPanel);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, btnClear, 6, SpringLayout.EAST, dataTransferSep);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, btnClear, -10, SpringLayout.EAST, dataTransferPanel);
 		btnClear.addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent arg0) {
@@ -230,7 +338,7 @@ public class GUI extends JFrame
 			}
 		});
 		btnClear.setEnabled(false);
-		dataTransfer.add(btnClear);
+		dataTransferPanel.add(btnClear);
 		
 		JButton btnNewButton = new JButton("\u21BB");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -238,12 +346,12 @@ public class GUI extends JFrame
 				updateCameraList();
 			}
 		});
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, transferProgress, 4, SpringLayout.SOUTH, btnNewButton);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, cameraSelector, -6, SpringLayout.WEST, btnNewButton);
-		sl_dataTransfer.putConstraint(SpringLayout.NORTH, btnNewButton, -1, SpringLayout.NORTH, cameraSelector);
-		sl_dataTransfer.putConstraint(SpringLayout.WEST, btnNewButton, -43, SpringLayout.EAST, transferProgress);
-		sl_dataTransfer.putConstraint(SpringLayout.EAST, btnNewButton, 0, SpringLayout.EAST, transferProgress);
-		dataTransfer.add(btnNewButton);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, transferProgress, 4, SpringLayout.SOUTH, btnNewButton);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, cameraSelector, -6, SpringLayout.WEST, btnNewButton);
+		sl_dataTransferPanel.putConstraint(SpringLayout.NORTH, btnNewButton, -1, SpringLayout.NORTH, cameraSelector);
+		sl_dataTransferPanel.putConstraint(SpringLayout.WEST, btnNewButton, -43, SpringLayout.EAST, transferProgress);
+		sl_dataTransferPanel.putConstraint(SpringLayout.EAST, btnNewButton, 0, SpringLayout.EAST, transferProgress);
+		dataTransferPanel.add(btnNewButton);
 		
 		JPanel dataFilesPanel = new JPanel();
 		tabbedPane.addTab("Data Files", null, dataFilesPanel, null);
