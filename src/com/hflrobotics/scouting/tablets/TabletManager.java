@@ -2,6 +2,8 @@ package com.hflrobotics.scouting.tablets;
 
 import java.util.ArrayList;
 
+import javax.swing.table.DefaultTableModel;
+
 import com.hflrobotics.scouting.GUI;
 
 public class TabletManager
@@ -27,14 +29,13 @@ public class TabletManager
 	{
 		for(int i = 0; i < tablets.size(); i++)
 		{
-			if(tablets.get(i).id == id)
+			if(tablets.get(i).id.equals(id))
 			{
 				tablets.remove(i);
+				updateGUI();
 				return;
 			}
-		}
-		
-		updateGUI();
+		}	
 	}
 	
 	public static void setTeam(String id, String team)
@@ -44,14 +45,14 @@ public class TabletManager
 		
 		for(int i = 0; i < tablets.size(); i++)
 		{
-			if(tablets.get(i).id == id)
+			if(tablets.get(i).id.equals(id))
 			{
 				assigning = tablets.get(i);
 				assigning.team = team;
 				// !TODO: send appropriate message to tablet
 			}
 			
-			if(tablets.get(i).team == team)
+			if(tablets.get(i).team.equals(team))
 			{
 				deassigning = tablets.get(i);
 				deassigning.team = "__";
@@ -65,24 +66,20 @@ public class TabletManager
 	
 	private static void updateGUI()
 	{
-		for(int i = 0; i < gui.getTabletCount(); i++)
+		for(int i = 0; i < gui.tabletTable.getRowCount(); i++)
 		{
-			if(i < tablets.size())
-			{
-				gui.setTabletCell(tablets.get(i).id, i, 1);
-				gui.setTabletCell(tablets.get(i).team, i, 3);
-				// !TODO: add query for ping, battery level, and match
-			}
-			else
-			{
-				gui.setTabletCell(null, i, 0);
-				gui.setTabletCell(null, i, 1);
-				gui.setTabletCell(null, i, 2);
-				gui.setTabletCell(null, i, 3);
-				gui.setTabletCell(null, i, 4);
-			}
+			((DefaultTableModel) gui.tabletTable.getModel()).removeRow(i);
 		}
-	}
-	
-	
+		
+		for(int i = 0; i < tablets.size(); i++)
+		{
+			((DefaultTableModel) gui.tabletTable.getModel()).addRow(new Object[]{
+				null,
+				tablets.get(i).id,
+				null,
+				tablets.get(i).team,
+				null,
+				});
+		}
+	}		
 }

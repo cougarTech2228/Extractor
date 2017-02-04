@@ -17,8 +17,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.github.sarxos.webcam.Webcam;
+import com.hflrobotics.scouting.schedule.Schedule;
 import com.hflrobotics.scouting.scraper.Scraper;
 import com.hflrobotics.scouting.scraper.Team;
+import com.hflrobotics.scouting.tablets.TabletManager;
 
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
@@ -58,8 +60,8 @@ public class GUI extends JFrame
 	private JFrame frame;
 	
 	private File currentDirectory = null;
-	private JTable table;
-	private JTable tabletTable;
+	public JTable scheduleTable;
+	public JTable tabletTable;
 	
 	public GUI() 
 	{
@@ -117,18 +119,63 @@ public class GUI extends JFrame
 		menuBar.add(mnTablets);
 		
 		JMenuItem mnTabletsAdd = new JMenuItem("Add");
+		mnTabletsAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String[] s = ((String)JOptionPane.showInputDialog(
+	                    null,
+	                    "Enter: [ADDRESS,ID]",
+	                    "Add tablet.",
+	                    JOptionPane.PLAIN_MESSAGE)).split(",");
+				
+				TabletManager.addTablet(s[0], s[1]);
+			}
+		});
 		mnTablets.add(mnTabletsAdd);
 		
 		JMenuItem mnTabletsDelete = new JMenuItem("Delete");
+		mnTabletsDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String s = (String)JOptionPane.showInputDialog(
+	                    null,
+	                    "Enter tablet ID",
+	                    "Remove tablet.",
+	                    JOptionPane.PLAIN_MESSAGE);
+				
+				TabletManager.removeTablet(s);
+			}
+		});
 		mnTablets.add(mnTabletsDelete);
 		
 		JMenuItem mnTabletsSetTeam = new JMenuItem("Set Team");
+		mnTabletsSetTeam.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String[] s = ((String)JOptionPane.showInputDialog(
+	                    null,
+	                    "Enter: [ID,TEAM]",
+	                    "Set team.",
+	                    JOptionPane.PLAIN_MESSAGE)).split(",");
+				
+				TabletManager.setTeam(s[0], s[1]);
+			}
+		});
 		mnTablets.add(mnTabletsSetTeam);
 		
 		JMenu mnSchedule = new JMenu("Schedule");
 		menuBar.add(mnSchedule);
 		
 		JMenuItem mnScheduleSetFile = new JMenuItem("Set File");
+		mnScheduleSetFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try
+				{
+					Schedule.loadSchedule(chooseFile());
+				}
+				catch (IOException e)
+				{
+					JOptionPane.showMessageDialog(null, "Error in reading file.");
+				}
+			}
+		});
 		mnScheduleSetFile.setIcon(new ImageIcon(GUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/Directory.gif")));
 		mnSchedule.add(mnScheduleSetFile);
 		
@@ -148,18 +195,15 @@ public class GUI extends JFrame
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		managerPanel.add(scrollPane);
 		
-		table = new JTable();
-		scrollPane.setViewportView(table);
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, table, 10, SpringLayout.NORTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, table, 56, SpringLayout.WEST, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, table, 212, SpringLayout.NORTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, table, -291, SpringLayout.EAST, managerPanel);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setModel(new DefaultTableModel(
+		scheduleTable = new JTable();
+		scrollPane.setViewportView(scheduleTable);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, scheduleTable, 10, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scheduleTable, 56, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scheduleTable, 212, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scheduleTable, -291, SpringLayout.EAST, managerPanel);
+		scheduleTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scheduleTable.setModel(new DefaultTableModel(
 			new Object[][] {
-				{"1", "2228", "3750", "340", "3003", "20", "120"},
-				{"2", "2228", "3750", "340", "3003", "20", "120"},
-				{"3", "2228", "3750", "340", "3003", "20", "120"},
 			},
 			new String[] {
 				"M", "R1", "R2", "R3", "B1", "B2", "B3"
@@ -172,6 +216,16 @@ public class GUI extends JFrame
 				return columnTypes[columnIndex];
 			}
 		});
+		scheduleTable.getColumnModel().getColumn(0).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+		scheduleTable.getColumnModel().getColumn(0).setMinWidth(30);
+		scheduleTable.getColumnModel().getColumn(0).setMaxWidth(30);
+		scheduleTable.getColumnModel().getColumn(1).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(2).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(3).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(4).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(5).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(6).setResizable(false);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane_1, 10, SpringLayout.WEST, managerPanel);
@@ -194,10 +248,6 @@ public class GUI extends JFrame
 		tabletTable = new JTable();
 		tabletTable.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
 			},
 			new String[] {
 				"", "ID", "Battery", "Team", "Match"
@@ -208,12 +258,6 @@ public class GUI extends JFrame
 			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
-			}
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
 			}
 		});
 		tabletTable.getColumnModel().getColumn(0).setResizable(false);
@@ -226,16 +270,6 @@ public class GUI extends JFrame
 		scrollPane_1.setViewportView(tabletTable);
 		sl_managerPanel.putConstraint(SpringLayout.WEST, lblTablets, 10, SpringLayout.WEST, managerPanel);
 		managerPanel.add(lblTablets);
-		table.getColumnModel().getColumn(0).setResizable(false);
-		table.getColumnModel().getColumn(0).setPreferredWidth(30);
-		table.getColumnModel().getColumn(0).setMinWidth(30);
-		table.getColumnModel().getColumn(0).setMaxWidth(30);
-		table.getColumnModel().getColumn(1).setResizable(false);
-		table.getColumnModel().getColumn(2).setResizable(false);
-		table.getColumnModel().getColumn(3).setResizable(false);
-		table.getColumnModel().getColumn(4).setResizable(false);
-		table.getColumnModel().getColumn(5).setResizable(false);
-		table.getColumnModel().getColumn(6).setResizable(false);
 		
 		JPanel dataTransferPanel = new JPanel();
 		tabbedPane.addTab("Data Transfer", null, dataTransferPanel, null);
@@ -462,6 +496,22 @@ public class GUI extends JFrame
 	}
 
 	
+	private String chooseFile()
+	{
+		final JFileChooser fc = new JFileChooser(currentDirectory);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setFileFilter(new FileNameExtensionFilter("Comma-separated values file (*.csv)", "csv"));
+		
+		if(fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
+		{
+			return fc.getSelectedFile().toString();
+		}
+		
+		return "";
+	}
+	
+	
 	private void chooseFile(JTextField field)
 	{
 		final JFileChooser fc = new JFileChooser(currentDirectory);
@@ -481,18 +531,6 @@ public class GUI extends JFrame
 	{
 		cameraSelector.setModel(new DefaultComboBoxModel<Webcam>((Webcam[]) Webcam.getWebcams().toArray()));
 	}
-	
-	
-	public void setTabletCell(Object data, int row, int column)
-	{
-		tabletTable.getModel().setValueAt(data, row, column);
-	}
-	
-	public int getTabletCount()
-	{
-		return tabletTable.getModel().getRowCount();
-	}
-	
 	
 	public void passExtractor(Extractor extractor)
 	{
