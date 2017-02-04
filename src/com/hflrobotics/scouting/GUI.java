@@ -59,7 +59,7 @@ public class GUI extends JFrame
 	
 	private File currentDirectory = null;
 	private JTable table;
-	private JTable table_1;
+	private JTable tabletTable;
 	
 	public GUI() 
 	{
@@ -191,8 +191,8 @@ public class GUI extends JFrame
 		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblSchedule, 0, SpringLayout.NORTH, lblTablets);
 		sl_managerPanel.putConstraint(SpringLayout.SOUTH, lblTablets, -198, SpringLayout.SOUTH, managerPanel);
 		
-		table_1 = new JTable();
-		table_1.setModel(new DefaultTableModel(
+		tabletTable = new JTable();
+		tabletTable.setModel(new DefaultTableModel(
 			new Object[][] {
 				{null, null, null, null, null},
 				{null, null, null, null, null},
@@ -216,14 +216,14 @@ public class GUI extends JFrame
 				return columnEditables[column];
 			}
 		});
-		table_1.getColumnModel().getColumn(0).setResizable(false);
-		table_1.getColumnModel().getColumn(0).setPreferredWidth(15);
-		table_1.getColumnModel().getColumn(0).setMaxWidth(15);
-		table_1.getColumnModel().getColumn(1).setResizable(false);
-		table_1.getColumnModel().getColumn(2).setResizable(false);
-		table_1.getColumnModel().getColumn(3).setResizable(false);
-		table_1.getColumnModel().getColumn(4).setResizable(false);
-		scrollPane_1.setViewportView(table_1);
+		tabletTable.getColumnModel().getColumn(0).setResizable(false);
+		tabletTable.getColumnModel().getColumn(0).setPreferredWidth(15);
+		tabletTable.getColumnModel().getColumn(0).setMaxWidth(15);
+		tabletTable.getColumnModel().getColumn(1).setResizable(false);
+		tabletTable.getColumnModel().getColumn(2).setResizable(false);
+		tabletTable.getColumnModel().getColumn(3).setResizable(false);
+		tabletTable.getColumnModel().getColumn(4).setResizable(false);
+		scrollPane_1.setViewportView(tabletTable);
 		sl_managerPanel.putConstraint(SpringLayout.WEST, lblTablets, 10, SpringLayout.WEST, managerPanel);
 		managerPanel.add(lblTablets);
 		table.getColumnModel().getColumn(0).setResizable(false);
@@ -480,6 +480,17 @@ public class GUI extends JFrame
 	public void updateCameraList()
 	{
 		cameraSelector.setModel(new DefaultComboBoxModel<Webcam>((Webcam[]) Webcam.getWebcams().toArray()));
+	}
+	
+	
+	public void setTabletCell(Object data, int row, int column)
+	{
+		tabletTable.getModel().setValueAt(data, row, column);
+	}
+	
+	public int getTabletCount()
+	{
+		return tabletTable.getModel().getRowCount();
 	}
 	
 	
