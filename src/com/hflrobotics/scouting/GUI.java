@@ -116,6 +116,7 @@ public class GUI extends JFrame
 		mnBlueAlliance.add(mnBlueAllianceScrape);
 		
 		JMenu mnTablets = new JMenu("Tablets");
+		mnTablets.setEnabled(false);
 		menuBar.add(mnTablets);
 		
 		JMenuItem mnTabletsAdd = new JMenuItem("Add");
@@ -161,6 +162,7 @@ public class GUI extends JFrame
 		mnTablets.add(mnTabletsSetTeam);
 		
 		JMenu mnSchedule = new JMenu("Schedule");
+		mnSchedule.setEnabled(false);
 		menuBar.add(mnSchedule);
 		
 		JMenuItem mnScheduleSetFile = new JMenuItem("Set File");
@@ -184,6 +186,7 @@ public class GUI extends JFrame
 		
 		JPanel managerPanel = new JPanel();
 		tabbedPane.addTab("Manager", null, managerPanel, null);
+		tabbedPane.setEnabledAt(0, false);
 		SpringLayout sl_managerPanel = new SpringLayout();
 		managerPanel.setLayout(sl_managerPanel);
 		
