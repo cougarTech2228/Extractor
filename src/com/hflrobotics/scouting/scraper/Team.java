@@ -1,4 +1,4 @@
-package com.hflrobotics.scouting;
+package com.hflrobotics.scouting.scraper;
 
 public class Team 
 {

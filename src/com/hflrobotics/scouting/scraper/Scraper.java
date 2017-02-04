@@ -1,4 +1,4 @@
-package com.hflrobotics.scouting;
+package com.hflrobotics.scouting.scraper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
