@@ -2,6 +2,7 @@ package com.hflrobotics.scouting;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -38,5 +39,14 @@ public class FileInterface
 			JOptionPane.showMessageDialog(null, "Unable to access file.");
 			return false;
 		}
-	}	
+	}
+	
+	
+	public static void writeAllData(String filename, ArrayList<String[]> data) throws IOException
+	{
+		CSVWriter writer = new CSVWriter(new FileWriter(filename));
+		writer.writeAll(data);
+		writer.close();
+	}
+	
 }
