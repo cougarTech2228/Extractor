@@ -10,9 +10,11 @@ import javax.swing.table.DefaultTableModel;
 import com.hflrobotics.scouting.GUI;
 import com.opencsv.CSVReader;
 
+
 public class Schedule
 {
 
+	
 	private static ArrayList<Match> matches = new ArrayList<Match>();
 	private static GUI gui;
 	

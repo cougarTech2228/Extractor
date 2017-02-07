@@ -2,10 +2,12 @@ package com.hflrobotics.scouting.tablets;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 import com.hflrobotics.scouting.GUI;
+import com.hflrobotics.scouting.schedule.ScheduleTeam;
 
 public class TabletManager
 {
@@ -39,25 +41,61 @@ public class TabletManager
 		}	
 	}
 	
+	
 	public static void setTeam(String id, String team)
 	{
-		Tablet assigning;
-		Tablet deassigning;
+		// !TODO: send messages to tablets
+		Tablet assigning = null;
+		Tablet deassigning = null;
 		
 		for(int i = 0; i < tablets.size(); i++)
 		{
 			if(tablets.get(i).id.equals(id))
 			{
 				assigning = tablets.get(i);
-				assigning.team = team;
-				// !TODO: send appropriate message to tablet
 			}
 			
 			if(tablets.get(i).team.equals(team))
 			{
 				deassigning = tablets.get(i);
-				deassigning.team = "__";
-				// !TODO: send appropriate message to tablet
+			}
+		}
+		
+		if(deassigning != null)
+		{
+			deassigning.team = ScheduleTeam.NONE;
+		}
+		
+		if(assigning != null)
+		{
+			switch(team.toUpperCase())
+			{
+				case "B1":
+					assigning.team = ScheduleTeam.B1;
+					break;
+					
+				case "B2":
+					assigning.team = ScheduleTeam.B2;
+					break;
+					
+				case "B3":
+					assigning.team = ScheduleTeam.B3;
+					break;
+					
+				case "R1":
+					assigning.team = ScheduleTeam.R1;
+					break;
+					
+				case "R2":
+					assigning.team = ScheduleTeam.R2;
+					break;
+					
+				case "R3":
+					assigning.team = ScheduleTeam.R3;
+					break;
+					
+				default:
+					JOptionPane.showMessageDialog(null, "Invalid team.");
 			}
 		}
 		

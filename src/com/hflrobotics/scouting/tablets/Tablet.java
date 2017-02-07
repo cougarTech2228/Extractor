@@ -1,11 +1,13 @@
 package com.hflrobotics.scouting.tablets;
 
+import com.hflrobotics.scouting.schedule.ScheduleTeam;
+
 public class Tablet
 {
 
 	String id;
 	String address;
-	String team = "__";
+	ScheduleTeam team = ScheduleTeam.NONE;
 	
 	
 	public Tablet(String address, String id)
