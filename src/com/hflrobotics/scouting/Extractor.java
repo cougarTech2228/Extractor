@@ -206,6 +206,28 @@ public class Extractor implements Runnable, ThreadFactory
 								// START code is not of proper format, continue searching
 							}							
 						}
+						
+						if(!data.contains(qr[0] + ":" + qr[1])) // qr has not already been scanned
+						{						
+							if(qr[0].equals("MATCH"))
+							{
+								data.add(qr[0] + ":" + qr[1]);
+								matchData.add(qr[1]);
+							}
+							else if(qr[0].equals("PIT"))
+							{
+								data.add(qr[0] + ":" + qr[1]);
+								pitData.add(qr[1]);
+							}
+							else if(qr[0].equals("DRIVER"))
+							{
+								data.add(qr[0] + ":" + qr[1]);
+								driverData.add(qr[1]);
+							}
+							
+							gui.currentDataList.setListData(data.toArray());
+							gui.transferProgress.setValue(data.size());
+						}
 					}
 
 					break;
@@ -221,6 +243,24 @@ public class Extractor implements Runnable, ThreadFactory
 					if(result != null)
 					{
 						String[] qr = result.toString().split(":");
+						
+						if(qr[0].equals("START"))
+						{				
+							try
+							{
+								total = Integer.decode(qr[1]);
+								
+								gui.transferProgress.setIndeterminate(false);
+								gui.transferProgress.setMaximum(total);
+								gui.transferProgress.setValue(0);
+								
+								gui.btnStop.setEnabled(true);
+							}
+							catch(NumberFormatException|ArrayIndexOutOfBoundsException ex)
+							{
+								// START code is not of proper format, continue searching
+							}							
+						}
 						
 						if(!data.contains(qr[0] + ":" + qr[1])) // qr has not already been scanned
 						{						
