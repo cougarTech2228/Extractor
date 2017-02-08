@@ -160,6 +160,22 @@ public class GUI extends JFrame
 		});
 		mnTablets.add(mnTabletsSetTeam);
 		
+		JMenuItem mnTabletsSetFile = new JMenuItem("Set File");
+		mnTabletsSetFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TabletManager.tabletDataFile = chooseFile();
+			}
+		});
+		mnTablets.add(mnTabletsSetFile);
+		
+		JMenuItem mntmLoadFile = new JMenuItem("Load File");
+		mntmLoadFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TabletManager.loadFile(chooseFile());
+			}
+		});
+		mnTablets.add(mntmLoadFile);
+		
 		JMenu mnSchedule = new JMenu("Schedule");
 		menuBar.add(mnSchedule);
 		
