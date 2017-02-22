@@ -65,7 +65,7 @@ public class GUI extends JFrame
 	
 	public GUI() 
 	{
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Extractor");
 		setSize(500, 300);
 		setResizable(false);
@@ -116,6 +116,7 @@ public class GUI extends JFrame
 		mnBlueAlliance.add(mnBlueAllianceScrape);
 		
 		JMenu mnTablets = new JMenu("Tablets");
+		mnTablets.setEnabled(false);
 		menuBar.add(mnTablets);
 		
 		JMenuItem mnTabletsAdd = new JMenuItem("Add");
@@ -177,6 +178,7 @@ public class GUI extends JFrame
 		mnTablets.add(mntmLoadFile);
 		
 		JMenu mnSchedule = new JMenu("Schedule");
+		mnSchedule.setEnabled(false);
 		menuBar.add(mnSchedule);
 		
 		JMenuItem mnScheduleSetFile = new JMenuItem("Set File");
@@ -197,95 +199,6 @@ public class GUI extends JFrame
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
-		
-		JPanel managerPanel = new JPanel();
-		tabbedPane.addTab("Manager", null, managerPanel, null);
-		SpringLayout sl_managerPanel = new SpringLayout();
-		managerPanel.setLayout(sl_managerPanel);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane, 258, SpringLayout.WEST, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane, -10, SpringLayout.SOUTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane, -10, SpringLayout.EAST, managerPanel);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		managerPanel.add(scrollPane);
-		
-		scheduleTable = new JTable();
-		scrollPane.setViewportView(scheduleTable);
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, scheduleTable, 10, SpringLayout.NORTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, scheduleTable, 56, SpringLayout.WEST, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scheduleTable, 212, SpringLayout.NORTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, scheduleTable, -291, SpringLayout.EAST, managerPanel);
-		scheduleTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scheduleTable.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"M", "R1", "R2", "R3", "B1", "B2", "B3"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, String.class, String.class, String.class, String.class, String.class, String.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		scheduleTable.getColumnModel().getColumn(0).setResizable(false);
-		scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(30);
-		scheduleTable.getColumnModel().getColumn(0).setMinWidth(30);
-		scheduleTable.getColumnModel().getColumn(0).setMaxWidth(30);
-		scheduleTable.getColumnModel().getColumn(1).setResizable(false);
-		scheduleTable.getColumnModel().getColumn(2).setResizable(false);
-		scheduleTable.getColumnModel().getColumn(3).setResizable(false);
-		scheduleTable.getColumnModel().getColumn(4).setResizable(false);
-		scheduleTable.getColumnModel().getColumn(5).setResizable(false);
-		scheduleTable.getColumnModel().getColumn(6).setResizable(false);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane_1, 10, SpringLayout.WEST, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane_1, -10, SpringLayout.SOUTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane_1, -6, SpringLayout.WEST, scrollPane);
-		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		managerPanel.add(scrollPane_1);
-		
-		JLabel lblSchedule = new JLabel("Schedule:");
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane, 6, SpringLayout.SOUTH, lblSchedule);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, lblSchedule, 0, SpringLayout.WEST, scrollPane);
-		managerPanel.add(lblSchedule);
-		
-		JLabel lblTablets = new JLabel("Tablets:");
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane_1, 6, SpringLayout.SOUTH, lblTablets);
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblSchedule, 0, SpringLayout.NORTH, lblTablets);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, lblTablets, -198, SpringLayout.SOUTH, managerPanel);
-		
-		tabletTable = new JTable();
-		tabletTable.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"", "ID", "Battery", "Team", "Match"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				Object.class, String.class, String.class, String.class, Integer.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		tabletTable.getColumnModel().getColumn(0).setResizable(false);
-		tabletTable.getColumnModel().getColumn(0).setPreferredWidth(15);
-		tabletTable.getColumnModel().getColumn(0).setMaxWidth(15);
-		tabletTable.getColumnModel().getColumn(1).setResizable(false);
-		tabletTable.getColumnModel().getColumn(2).setResizable(false);
-		tabletTable.getColumnModel().getColumn(3).setResizable(false);
-		tabletTable.getColumnModel().getColumn(4).setResizable(false);
-		scrollPane_1.setViewportView(tabletTable);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, lblTablets, 10, SpringLayout.WEST, managerPanel);
-		managerPanel.add(lblTablets);
 		
 		JPanel dataTransferPanel = new JPanel();
 		tabbedPane.addTab("Data Transfer", null, dataTransferPanel, null);
@@ -509,6 +422,96 @@ public class GUI extends JFrame
 			}
 		});
 		dataFilesPanel.add(teamDataBtn);
+		
+		JPanel managerPanel = new JPanel();
+		tabbedPane.addTab("Manager", null, managerPanel, null);
+		tabbedPane.setEnabledAt(2, false);
+		SpringLayout sl_managerPanel = new SpringLayout();
+		managerPanel.setLayout(sl_managerPanel);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane, 258, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane, -10, SpringLayout.SOUTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane, -10, SpringLayout.EAST, managerPanel);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		managerPanel.add(scrollPane);
+		
+		scheduleTable = new JTable();
+		scrollPane.setViewportView(scheduleTable);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, scheduleTable, 10, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scheduleTable, 56, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scheduleTable, 212, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scheduleTable, -291, SpringLayout.EAST, managerPanel);
+		scheduleTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scheduleTable.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"M", "R1", "R2", "R3", "B1", "B2", "B3"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, String.class, String.class, String.class, String.class, String.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		scheduleTable.getColumnModel().getColumn(0).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+		scheduleTable.getColumnModel().getColumn(0).setMinWidth(30);
+		scheduleTable.getColumnModel().getColumn(0).setMaxWidth(30);
+		scheduleTable.getColumnModel().getColumn(1).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(2).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(3).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(4).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(5).setResizable(false);
+		scheduleTable.getColumnModel().getColumn(6).setResizable(false);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane_1, 10, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane_1, -10, SpringLayout.SOUTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane_1, -6, SpringLayout.WEST, scrollPane);
+		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		managerPanel.add(scrollPane_1);
+		
+		JLabel lblSchedule = new JLabel("Schedule:");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane, 6, SpringLayout.SOUTH, lblSchedule);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblSchedule, 0, SpringLayout.WEST, scrollPane);
+		managerPanel.add(lblSchedule);
+		
+		JLabel lblTablets = new JLabel("Tablets:");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane_1, 6, SpringLayout.SOUTH, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblSchedule, 0, SpringLayout.NORTH, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, lblTablets, -198, SpringLayout.SOUTH, managerPanel);
+		
+		tabletTable = new JTable();
+		tabletTable.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"", "ID", "Battery", "Team", "Match"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Object.class, String.class, String.class, String.class, Integer.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		tabletTable.getColumnModel().getColumn(0).setResizable(false);
+		tabletTable.getColumnModel().getColumn(0).setPreferredWidth(15);
+		tabletTable.getColumnModel().getColumn(0).setMaxWidth(15);
+		tabletTable.getColumnModel().getColumn(1).setResizable(false);
+		tabletTable.getColumnModel().getColumn(2).setResizable(false);
+		tabletTable.getColumnModel().getColumn(3).setResizable(false);
+		tabletTable.getColumnModel().getColumn(4).setResizable(false);
+		scrollPane_1.setViewportView(tabletTable);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblTablets, 10, SpringLayout.WEST, managerPanel);
+		managerPanel.add(lblTablets);
 	}
 
 	
