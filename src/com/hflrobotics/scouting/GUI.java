@@ -42,6 +42,9 @@ import javax.swing.JMenuItem;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.JTextPane;
 
 public class GUI extends JFrame
 {
@@ -61,7 +64,6 @@ public class GUI extends JFrame
 	
 	private File currentDirectory = null;
 	public JTable scheduleTable;
-	public JTable tabletTable;
 	
 	public GUI() 
 	{
@@ -114,6 +116,25 @@ public class GUI extends JFrame
 		});
 		mnBlueAllianceScrape.setIcon(new ImageIcon(GUI.class.getResource("/javax/swing/plaf/metal/icons/ocean/hardDrive.gif")));
 		mnBlueAlliance.add(mnBlueAllianceScrape);
+		
+		JMenu mnSchedule = new JMenu("Schedule");
+		menuBar.add(mnSchedule);
+		
+		JMenuItem mnScheduleSetFile = new JMenuItem("Set File");
+		mnScheduleSetFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try
+				{
+					Schedule.loadSchedule(chooseFile());
+				}
+				catch (IOException e)
+				{
+					JOptionPane.showMessageDialog(null, "Error in reading file.");
+				}
+			}
+		});
+		mnScheduleSetFile.setIcon(new ImageIcon(GUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/Directory.gif")));
+		mnSchedule.add(mnScheduleSetFile);
 		
 		JMenu mnTablets = new JMenu("Tablets");
 		mnTablets.setEnabled(false);
@@ -176,26 +197,6 @@ public class GUI extends JFrame
 			}
 		});
 		mnTablets.add(mntmLoadFile);
-		
-		JMenu mnSchedule = new JMenu("Schedule");
-		mnSchedule.setEnabled(false);
-		menuBar.add(mnSchedule);
-		
-		JMenuItem mnScheduleSetFile = new JMenuItem("Set File");
-		mnScheduleSetFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try
-				{
-					Schedule.loadSchedule(chooseFile());
-				}
-				catch (IOException e)
-				{
-					JOptionPane.showMessageDialog(null, "Error in reading file.");
-				}
-			}
-		});
-		mnScheduleSetFile.setIcon(new ImageIcon(GUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/Directory.gif")));
-		mnSchedule.add(mnScheduleSetFile);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
@@ -425,14 +426,12 @@ public class GUI extends JFrame
 		
 		JPanel managerPanel = new JPanel();
 		tabbedPane.addTab("Manager", null, managerPanel, null);
-		tabbedPane.setEnabledAt(2, false);
 		SpringLayout sl_managerPanel = new SpringLayout();
 		managerPanel.setLayout(sl_managerPanel);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane, 258, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane, 10, SpringLayout.WEST, managerPanel);
 		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane, -10, SpringLayout.SOUTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane, -10, SpringLayout.EAST, managerPanel);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		managerPanel.add(scrollPane);
@@ -469,49 +468,70 @@ public class GUI extends JFrame
 		scheduleTable.getColumnModel().getColumn(5).setResizable(false);
 		scheduleTable.getColumnModel().getColumn(6).setResizable(false);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane_1, 10, SpringLayout.WEST, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane_1, -10, SpringLayout.SOUTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane_1, -6, SpringLayout.WEST, scrollPane);
-		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		managerPanel.add(scrollPane_1);
-		
-		JLabel lblSchedule = new JLabel("Schedule:");
+		JLabel lblSchedule = new JLabel("Match Schedule:");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblSchedule, 10, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblSchedule, 10, SpringLayout.WEST, managerPanel);
 		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane, 6, SpringLayout.SOUTH, lblSchedule);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, lblSchedule, 0, SpringLayout.WEST, scrollPane);
 		managerPanel.add(lblSchedule);
 		
-		JLabel lblTablets = new JLabel("Tablets:");
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane_1, 6, SpringLayout.SOUTH, lblTablets);
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblSchedule, 0, SpringLayout.NORTH, lblTablets);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, lblTablets, -198, SpringLayout.SOUTH, managerPanel);
-		
-		tabletTable = new JTable();
-		tabletTable.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"", "ID", "Battery", "Team", "Match"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				Object.class, String.class, String.class, String.class, Integer.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		tabletTable.getColumnModel().getColumn(0).setResizable(false);
-		tabletTable.getColumnModel().getColumn(0).setPreferredWidth(15);
-		tabletTable.getColumnModel().getColumn(0).setMaxWidth(15);
-		tabletTable.getColumnModel().getColumn(1).setResizable(false);
-		tabletTable.getColumnModel().getColumn(2).setResizable(false);
-		tabletTable.getColumnModel().getColumn(3).setResizable(false);
-		tabletTable.getColumnModel().getColumn(4).setResizable(false);
-		scrollPane_1.setViewportView(tabletTable);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, lblTablets, 10, SpringLayout.WEST, managerPanel);
+		JLabel lblTablets = new JLabel("Team:");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblTablets, 0, SpringLayout.NORTH, lblSchedule);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, lblTablets, -57, SpringLayout.EAST, managerPanel);
 		managerPanel.add(lblTablets);
+		
+		JComboBox comboBox = new JComboBox();
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, comboBox, 0, SpringLayout.NORTH, scrollPane);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, comboBox, 0, SpringLayout.WEST, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, comboBox, -8, SpringLayout.EAST, managerPanel);
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"red1", "red2", "red3", "blue1", "blue2", "blue3"}));
+		comboBox.setMaximumRowCount(6);
+		managerPanel.add(comboBox);
+		
+		JLabel lblCurrentMatchBeing = new JLabel("Current Match Being Played:");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblCurrentMatchBeing, 0, SpringLayout.NORTH, lblSchedule);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblCurrentMatchBeing, 169, SpringLayout.EAST, lblSchedule);
+		managerPanel.add(lblCurrentMatchBeing);
+		
+		JSpinner spinner = new JSpinner();
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane, -27, SpringLayout.WEST, spinner);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, spinner, 0, SpringLayout.NORTH, scrollPane);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, spinner, 0, SpringLayout.WEST, lblCurrentMatchBeing);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, spinner, -93, SpringLayout.EAST, managerPanel);
+		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
+		managerPanel.add(spinner);
+		
+		JTextPane textPane = new JTextPane();
+		sl_managerPanel.putConstraint(SpringLayout.EAST, textPane, 0, SpringLayout.EAST, lblCurrentMatchBeing);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, textPane, 258, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, textPane, 0, SpringLayout.SOUTH, scrollPane);
+		managerPanel.add(textPane);
+		
+		JSeparator separator = new JSeparator();
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, separator, 6, SpringLayout.SOUTH, spinner);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, separator, 27, SpringLayout.EAST, scrollPane);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, separator, -10, SpringLayout.EAST, managerPanel);
+		managerPanel.add(separator);
+		
+		JLabel lblPitList = new JLabel("Pit List:");
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, separator, -6, SpringLayout.NORTH, lblPitList);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblPitList, 64, SpringLayout.NORTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, textPane, 6, SpringLayout.SOUTH, lblPitList);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblPitList, 27, SpringLayout.EAST, scrollPane);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, lblPitList, -196, SpringLayout.EAST, managerPanel);
+		managerPanel.add(lblPitList);
+		
+		JLabel lblNewLabel_1 = new JLabel("Write to File");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblNewLabel_1, 0, SpringLayout.NORTH, lblPitList);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, lblNewLabel_1, 0, SpringLayout.WEST, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, lblNewLabel_1, -29, SpringLayout.EAST, managerPanel);
+		managerPanel.add(lblNewLabel_1);
+		
+		JButton btnNewButton_1 = new JButton(">>");
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, btnNewButton_1, 6, SpringLayout.SOUTH, lblNewLabel_1);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, btnNewButton_1, 0, SpringLayout.WEST, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, btnNewButton_1, -10, SpringLayout.SOUTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, btnNewButton_1, -10, SpringLayout.EAST, managerPanel);
+		managerPanel.add(btnNewButton_1);
 	}
 
 	
