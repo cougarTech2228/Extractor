@@ -24,6 +24,9 @@ public class Schedule
 	}
 	
 	
+	public static ArrayList<Match> getMatches() { return matches; }
+	
+	
 	public static void loadSchedule(String filename) throws IOException
 	{
 		CSVReader reader = new CSVReader(new FileReader(filename));

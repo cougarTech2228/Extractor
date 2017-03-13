@@ -3,13 +3,13 @@ package com.hflrobotics.scouting.schedule;
 public class Match
 {
 	
-	int match;
-	int r1;
-	int r2;
-	int r3;
-	int b1;
-	int b2;
-	int b3;
+	public int match;
+	public int r1;
+	public int r2;
+	public int r3;
+	public int b1;
+	public int b2;
+	public int b3;
 	
 	
 	public Match(int match, int r1, int r2, int r3, int b1, int b2, int b3)

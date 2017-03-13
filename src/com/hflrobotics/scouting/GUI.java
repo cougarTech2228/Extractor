@@ -20,6 +20,7 @@ import com.github.sarxos.webcam.Webcam;
 import com.hflrobotics.scouting.schedule.Schedule;
 import com.hflrobotics.scouting.scraper.Scraper;
 import com.hflrobotics.scouting.scraper.Team;
+import com.hflrobotics.scouting.tablets.ConfigWriter;
 import com.hflrobotics.scouting.tablets.TabletManager;
 
 import javax.swing.JLabel;
@@ -479,35 +480,35 @@ public class GUI extends JFrame
 		sl_managerPanel.putConstraint(SpringLayout.EAST, lblTablets, -57, SpringLayout.EAST, managerPanel);
 		managerPanel.add(lblTablets);
 		
-		JComboBox comboBox = new JComboBox();
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, comboBox, 0, SpringLayout.NORTH, scrollPane);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, comboBox, 0, SpringLayout.WEST, lblTablets);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, comboBox, -8, SpringLayout.EAST, managerPanel);
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"red1", "red2", "red3", "blue1", "blue2", "blue3"}));
-		comboBox.setMaximumRowCount(6);
-		managerPanel.add(comboBox);
+		JComboBox configTeam = new JComboBox();
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, configTeam, 0, SpringLayout.NORTH, scrollPane);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, configTeam, 0, SpringLayout.WEST, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, configTeam, -8, SpringLayout.EAST, managerPanel);
+		configTeam.setModel(new DefaultComboBoxModel(new String[] {"red1", "red2", "red3", "blue1", "blue2", "blue3"}));
+		configTeam.setMaximumRowCount(6);
+		managerPanel.add(configTeam);
 		
 		JLabel lblCurrentMatchBeing = new JLabel("Current Match Being Played:");
 		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblCurrentMatchBeing, 0, SpringLayout.NORTH, lblSchedule);
 		sl_managerPanel.putConstraint(SpringLayout.WEST, lblCurrentMatchBeing, 169, SpringLayout.EAST, lblSchedule);
 		managerPanel.add(lblCurrentMatchBeing);
 		
-		JSpinner spinner = new JSpinner();
-		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane, -27, SpringLayout.WEST, spinner);
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, spinner, 0, SpringLayout.NORTH, scrollPane);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, spinner, 0, SpringLayout.WEST, lblCurrentMatchBeing);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, spinner, -93, SpringLayout.EAST, managerPanel);
-		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
-		managerPanel.add(spinner);
+		JSpinner configCurrentMatch = new JSpinner();
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane, -27, SpringLayout.WEST, configCurrentMatch);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, configCurrentMatch, 0, SpringLayout.NORTH, scrollPane);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, configCurrentMatch, 0, SpringLayout.WEST, lblCurrentMatchBeing);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, configCurrentMatch, -93, SpringLayout.EAST, managerPanel);
+		configCurrentMatch.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
+		managerPanel.add(configCurrentMatch);
 		
-		JTextPane textPane = new JTextPane();
-		sl_managerPanel.putConstraint(SpringLayout.EAST, textPane, 0, SpringLayout.EAST, lblCurrentMatchBeing);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, textPane, 258, SpringLayout.WEST, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, textPane, 0, SpringLayout.SOUTH, scrollPane);
-		managerPanel.add(textPane);
+		JTextPane configPitList = new JTextPane();
+		sl_managerPanel.putConstraint(SpringLayout.EAST, configPitList, 0, SpringLayout.EAST, lblCurrentMatchBeing);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, configPitList, 258, SpringLayout.WEST, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, configPitList, 0, SpringLayout.SOUTH, scrollPane);
+		managerPanel.add(configPitList);
 		
 		JSeparator separator = new JSeparator();
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, separator, 6, SpringLayout.SOUTH, spinner);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, separator, 6, SpringLayout.SOUTH, configCurrentMatch);
 		sl_managerPanel.putConstraint(SpringLayout.WEST, separator, 27, SpringLayout.EAST, scrollPane);
 		sl_managerPanel.putConstraint(SpringLayout.EAST, separator, -10, SpringLayout.EAST, managerPanel);
 		managerPanel.add(separator);
@@ -515,7 +516,7 @@ public class GUI extends JFrame
 		JLabel lblPitList = new JLabel("Pit List:");
 		sl_managerPanel.putConstraint(SpringLayout.SOUTH, separator, -6, SpringLayout.NORTH, lblPitList);
 		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblPitList, 64, SpringLayout.NORTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, textPane, 6, SpringLayout.SOUTH, lblPitList);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, configPitList, 6, SpringLayout.SOUTH, lblPitList);
 		sl_managerPanel.putConstraint(SpringLayout.WEST, lblPitList, 27, SpringLayout.EAST, scrollPane);
 		sl_managerPanel.putConstraint(SpringLayout.EAST, lblPitList, -196, SpringLayout.EAST, managerPanel);
 		managerPanel.add(lblPitList);
@@ -526,14 +527,34 @@ public class GUI extends JFrame
 		sl_managerPanel.putConstraint(SpringLayout.EAST, lblNewLabel_1, -29, SpringLayout.EAST, managerPanel);
 		managerPanel.add(lblNewLabel_1);
 		
-		JButton btnNewButton_1 = new JButton(">>");
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, btnNewButton_1, 6, SpringLayout.SOUTH, lblNewLabel_1);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, btnNewButton_1, 0, SpringLayout.WEST, lblTablets);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, btnNewButton_1, -10, SpringLayout.SOUTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, btnNewButton_1, -10, SpringLayout.EAST, managerPanel);
-		managerPanel.add(btnNewButton_1);
+		JButton configWriteBtn = new JButton(">>");
+		configWriteBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ConfigWriter.writeToConfig(chooseJSONFile(), configCurrentMatch, configTeam, configPitList);
+			}
+		});
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, configWriteBtn, 6, SpringLayout.SOUTH, lblNewLabel_1);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, configWriteBtn, 0, SpringLayout.WEST, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, configWriteBtn, -10, SpringLayout.SOUTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, configWriteBtn, -10, SpringLayout.EAST, managerPanel);
+		managerPanel.add(configWriteBtn);
 	}
 
+	
+	private String chooseJSONFile()
+	{
+		final JFileChooser fc = new JFileChooser(currentDirectory);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.setFileFilter(new FileNameExtensionFilter("JSON file (*.json)", "json"));
+		
+		if(fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
+		{
+			return fc.getSelectedFile().toString();
+		}
+		
+		return "";
+	}
 	
 	private String chooseFile()
 	{
