@@ -40,7 +40,7 @@ public class TabletManager
 		}
 		
 		tablets.add(new Tablet(address, id));
-		updateGUI();
+		//updateGUI();
 		writeTabletConfig();
 	}
 	
@@ -52,7 +52,7 @@ public class TabletManager
 			if(tablets.get(i).id.equals(id))
 			{
 				tablets.remove(i);
-				updateGUI();
+				//updateGUI();
 				writeTabletConfig();
 				return;
 			}
@@ -121,10 +121,10 @@ public class TabletManager
 			assigning.team = teamType;
 		}
 		
-		updateGUI();
+		//updateGUI();
 	}
 	
-	
+	/*
 	@SuppressWarnings("serial")
 	private static void updateGUI()
 	{
@@ -164,7 +164,7 @@ public class TabletManager
 			gui.tabletTable.getColumnModel().getColumn(3).setResizable(false);
 			gui.tabletTable.getColumnModel().getColumn(4).setResizable(false);
 	}		
-	
+	*/
 	
 	
 	
@@ -208,7 +208,7 @@ public class TabletManager
 		    }
 		    
 		    reader.close();
-		    updateGUI();
+		    //updateGUI();
 		}
 		catch (IOException e)
 		{
