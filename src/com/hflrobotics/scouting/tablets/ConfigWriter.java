@@ -47,11 +47,20 @@ public class ConfigWriter
 			JSONArray pit = new JSONArray();
 			String[] pitTeams = pitList.getText().split("\\r?\\n");
 			
+						
+			
 			for(String pitTeam : pitTeams)
 			{
-				JSONObject pitTeamObj = new JSONObject();
-				pitTeamObj.put("team", Integer.parseInt(pitTeam));
-				pit.add(pitTeamObj);
+				try
+				{
+					JSONObject pitTeamObj = new JSONObject();
+					pitTeamObj.put("team", Integer.parseInt(pitTeam));
+					pit.add(pitTeamObj);
+				}
+				catch(NumberFormatException ex)
+				{
+					JOptionPane.showMessageDialog(null, "No pit specified!");
+				}
 			}
 			
 			obj.put("pits", pit);	
