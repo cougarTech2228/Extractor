@@ -15,18 +15,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class Scraper
+public class ScraperV3
 {
 
-	/**
-	 * Deprecated version that uses TBA v2 API
-	 */
-	
 	private static String VersionCode = "v1";
 	private static final String TBA_URL = "https://www.thebluealliance.com/";
 	private static final String TBA_API_URL = TBA_URL + "api/v2/";
 	private static final String TBA_Header_NAME = "X-TBA-App-Id";
-	private static String TBA_Header_VALUE = "frc2228:Scouting:" + Scraper.VersionCode;
+	private static String TBA_Header_VALUE = "frc2228:Scouting:" + ScraperV3.VersionCode;
 
 	public static ArrayList<String[]> getCSVWriteableData(ArrayList<Team> teams)
 	{
@@ -51,13 +47,13 @@ public class Scraper
 	 */
 	public static void getOPRs(String eventCode, ArrayList<Team> teams) throws IOException
 	{
-		String data = Scraper.getEventDataFromTBA(eventCode, "stats");
+		String data = ScraperV3.getEventDataFromTBA(eventCode, "stats");
 		JsonParser parser = new JsonParser();
 		JsonObject obj = parser.parse(data).getAsJsonObject();
 
 		for (Map.Entry<String, JsonElement> entry : obj.get("oprs").getAsJsonObject().entrySet())
 		{
-			int i = Scraper.teamExists(entry.getKey(), teams);
+			int i = ScraperV3.teamExists(entry.getKey(), teams);
 			if (i != -1)
 			{
 				teams.get(i).opr = entry.getValue().toString();
@@ -81,7 +77,7 @@ public class Scraper
 	 */
 	public static void getRankings(String eventCode, ArrayList<Team> teams) throws IOException
 	{
-		String data = Scraper.getEventDataFromTBA(eventCode, "rankings");
+		String data = ScraperV3.getEventDataFromTBA(eventCode, "rankings");
 		JsonParser parser = new JsonParser();
 		JsonArray obj = parser.parse(data).getAsJsonArray();
 
@@ -91,7 +87,7 @@ public class Scraper
 
 			if (!team.get(0).getAsString().equalsIgnoreCase("Rank"))
 			{
-				int i = Scraper.teamExists(team.get(1).getAsString(), teams);
+				int i = ScraperV3.teamExists(team.get(1).getAsString(), teams);
 				if (i != -1)
 				{
 					teams.get(i).rank = team.get(0).getAsString();
@@ -141,9 +137,9 @@ public class Scraper
 	 */
 	private static String getEventDataFromTBA(String eventCode, String request) throws IOException
 	{
-		URL url = new URL(Scraper.TBA_API_URL + "event/" + eventCode + "/" + request);
+		URL url = new URL(ScraperV3.TBA_API_URL + "event/" + eventCode + "/" + request);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.addRequestProperty(Scraper.TBA_Header_NAME, TBA_Header_VALUE);
+		con.addRequestProperty(ScraperV3.TBA_Header_NAME, TBA_Header_VALUE);
 
 		con.setRequestMethod("GET");
 		con.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
