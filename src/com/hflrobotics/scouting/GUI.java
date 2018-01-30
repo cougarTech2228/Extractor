@@ -19,6 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.github.sarxos.webcam.Webcam;
 import com.hflrobotics.scouting.schedule.Schedule;
 import com.hflrobotics.scouting.scraper.Scraper;
+import com.hflrobotics.scouting.scraper.ScraperV3;
 import com.hflrobotics.scouting.scraper.Team;
 import com.hflrobotics.scouting.tablets.ConfigWriter;
 import com.hflrobotics.scouting.tablets.TabletManager;
@@ -102,9 +103,9 @@ public class GUI extends JFrame
 				try
 				{
 					ArrayList<Team> teams = new ArrayList<Team>();
-					Scraper.getOPRs(s, teams);
-					Scraper.getRankings(s, teams);
-					ArrayList<String[]> data = Scraper.getCSVWriteableData(teams);
+					ScraperV3.getOPRs(s, teams);
+					ScraperV3.getRankings(s, teams);
+					ArrayList<String[]> data = ScraperV3.getCSVWriteableData(teams);
 					FileInterface.writeAllData(teamDataFile.getText(), data);
 					
 					JOptionPane.showMessageDialog(null, "Data retrieved, file written to.");
