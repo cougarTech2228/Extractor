@@ -542,12 +542,15 @@ public class GUI extends JFrame
 	}
 
 	
+	/**
+	 * Actually chooses a txt file as you cannot transfer JSON files via BT
+	 */
 	private String chooseJSONFile()
 	{
 		final JFileChooser fc = new JFileChooser(currentDirectory);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setAcceptAllFileFilterUsed(false);
-		fc.setFileFilter(new FileNameExtensionFilter("JSON file (*.json)", "json"));
+		fc.setFileFilter(new FileNameExtensionFilter("TXT file (*.txt)", "txt"));
 		
 		if(fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
 		{
