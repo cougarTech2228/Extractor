@@ -1,6 +1,8 @@
 package com.hflrobotics.scouting;
 
 import java.awt.image.BufferedImage;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -46,6 +48,15 @@ public class Extractor implements Runnable, ThreadFactory
 	public void setFileDefaults()
 	{
 		String rootPath = ClassLoader.getSystemClassLoader().getResource(".").getPath();
+		try
+		{
+			rootPath = URLDecoder.decode(rootPath, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		gui.matchDataFile.setText(rootPath + "data/match.csv");
 		gui.pitDataFile.setText(rootPath + "data/pit.csv");
 		gui.driverDataFile.setText(rootPath + "data/driver.csv");

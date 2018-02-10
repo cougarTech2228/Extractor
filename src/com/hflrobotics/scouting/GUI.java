@@ -34,6 +34,8 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.ListSelectionModel;
@@ -64,7 +66,7 @@ public class GUI extends JFrame
 	private JButton matchDataBtn;
 	private JFrame frame;
 	
-	private File currentDirectory = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+	private File currentDirectory;
 	public JTable scheduleTable;
 	
 	public GUI() 
@@ -76,6 +78,16 @@ public class GUI extends JFrame
 		setVisible(true);
 		frame = this;
 		
+		try
+		{
+			currentDirectory = new File(URLDecoder.decode(
+					ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8"));
+		}
+		catch (UnsupportedEncodingException e1)
+		{
+			e1.printStackTrace();
+		}
+
 		try
 		{
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
