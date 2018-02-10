@@ -1,8 +1,8 @@
 package com.hflrobotics.scouting;
 
 import java.awt.image.BufferedImage;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -38,9 +38,19 @@ public class Extractor implements Runnable, ThreadFactory
 		
 		this.gui = gui;
 		
+		setFileDefaults();
 		executor.execute(this);
 	}
 
+	
+	public void setFileDefaults()
+	{
+		String rootPath = ClassLoader.getSystemClassLoader().getResource(".").getPath();
+		gui.matchDataFile.setText(rootPath + "data/match.csv");
+		gui.pitDataFile.setText(rootPath + "data/pit.csv");
+		gui.driverDataFile.setText(rootPath + "data/driver.csv");
+		gui.teamDataFile.setText(rootPath + "data/team.csv");
+	}
 	
 	public void writeAllData()
 	{

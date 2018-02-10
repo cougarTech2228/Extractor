@@ -64,7 +64,7 @@ public class GUI extends JFrame
 	private JButton matchDataBtn;
 	private JFrame frame;
 	
-	private File currentDirectory = null;
+	private File currentDirectory = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
 	public JTable scheduleTable;
 	
 	public GUI() 
