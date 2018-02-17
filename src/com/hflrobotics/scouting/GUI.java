@@ -150,7 +150,7 @@ public class GUI extends JFrame
 		mnScheduleSetFile.setIcon(new ImageIcon(GUI.class.getResource("/com/sun/java/swing/plaf/windows/icons/Directory.gif")));
 		mnSchedule.add(mnScheduleSetFile);
 		
-		JMenu mnTablets = new JMenu("Tablets");
+		/*JMenu mnTablets = new JMenu("Tablets");
 		mnTablets.setEnabled(false);
 		menuBar.add(mnTablets);
 		
@@ -210,7 +210,7 @@ public class GUI extends JFrame
 				TabletManager.loadFile(chooseFile());
 			}
 		});
-		mnTablets.add(mntmLoadFile);
+		mnTablets.add(mntmLoadFile);*/
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
@@ -511,14 +511,8 @@ public class GUI extends JFrame
 		sl_managerPanel.putConstraint(SpringLayout.NORTH, configCurrentMatch, 0, SpringLayout.NORTH, scrollPane);
 		sl_managerPanel.putConstraint(SpringLayout.WEST, configCurrentMatch, 0, SpringLayout.WEST, lblCurrentMatchBeing);
 		sl_managerPanel.putConstraint(SpringLayout.EAST, configCurrentMatch, -93, SpringLayout.EAST, managerPanel);
-		configCurrentMatch.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
+		configCurrentMatch.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		managerPanel.add(configCurrentMatch);
-		
-		JTextPane configPitList = new JTextPane();
-		sl_managerPanel.putConstraint(SpringLayout.EAST, configPitList, 0, SpringLayout.EAST, lblCurrentMatchBeing);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, configPitList, 258, SpringLayout.WEST, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, configPitList, 0, SpringLayout.SOUTH, scrollPane);
-		managerPanel.add(configPitList);
 		
 		JSeparator separator = new JSeparator();
 		sl_managerPanel.putConstraint(SpringLayout.NORTH, separator, 6, SpringLayout.SOUTH, configCurrentMatch);
@@ -529,7 +523,6 @@ public class GUI extends JFrame
 		JLabel lblPitList = new JLabel("Pit List:");
 		sl_managerPanel.putConstraint(SpringLayout.SOUTH, separator, -6, SpringLayout.NORTH, lblPitList);
 		sl_managerPanel.putConstraint(SpringLayout.NORTH, lblPitList, 64, SpringLayout.NORTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, configPitList, 6, SpringLayout.SOUTH, lblPitList);
 		sl_managerPanel.putConstraint(SpringLayout.WEST, lblPitList, 27, SpringLayout.EAST, scrollPane);
 		sl_managerPanel.putConstraint(SpringLayout.EAST, lblPitList, -196, SpringLayout.EAST, managerPanel);
 		managerPanel.add(lblPitList);
@@ -540,17 +533,34 @@ public class GUI extends JFrame
 		sl_managerPanel.putConstraint(SpringLayout.EAST, lblNewLabel_1, -29, SpringLayout.EAST, managerPanel);
 		managerPanel.add(lblNewLabel_1);
 		
+		
+		
+		JTextPane configPitList = new JTextPane();
+				
 		JButton configWriteBtn = new JButton(">>");
+				sl_managerPanel.putConstraint(SpringLayout.NORTH, configWriteBtn, 6, SpringLayout.SOUTH, lblNewLabel_1);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, configWriteBtn, 0, SpringLayout.WEST, lblTablets);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, configWriteBtn, -10, SpringLayout.SOUTH, managerPanel);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, configWriteBtn, -10, SpringLayout.EAST, managerPanel);
+		managerPanel.add(configWriteBtn);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		sl_managerPanel.putConstraint(SpringLayout.WEST, scrollPane_1, 0, SpringLayout.WEST, lblCurrentMatchBeing);
+		scrollPane_1.setEnabled(false);
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		sl_managerPanel.putConstraint(SpringLayout.NORTH, scrollPane_1, 6, SpringLayout.SOUTH, lblPitList);
+		sl_managerPanel.putConstraint(SpringLayout.SOUTH, scrollPane_1, 134, SpringLayout.SOUTH, lblPitList);
+		sl_managerPanel.putConstraint(SpringLayout.EAST, scrollPane_1, -7, SpringLayout.WEST, configWriteBtn);
+		managerPanel.add(scrollPane_1);
+		
+		scrollPane_1.setViewportView(configPitList);
+		
 		configWriteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ConfigWriter.writeToConfig(chooseJSONFile(), configCurrentMatch, configTeam, configPitList);
 			}
 		});
-		sl_managerPanel.putConstraint(SpringLayout.NORTH, configWriteBtn, 6, SpringLayout.SOUTH, lblNewLabel_1);
-		sl_managerPanel.putConstraint(SpringLayout.WEST, configWriteBtn, 0, SpringLayout.WEST, lblTablets);
-		sl_managerPanel.putConstraint(SpringLayout.SOUTH, configWriteBtn, -10, SpringLayout.SOUTH, managerPanel);
-		sl_managerPanel.putConstraint(SpringLayout.EAST, configWriteBtn, -10, SpringLayout.EAST, managerPanel);
-		managerPanel.add(configWriteBtn);
 	}
 
 	

@@ -25,7 +25,7 @@ public class ConfigWriter
 		{		
 			JSONObject obj = new JSONObject();
 			obj.put("team", team.getSelectedItem().toString());
-			obj.put("currentMatch", currentMatch.getValue());
+			obj.put("currentMatch", (int) currentMatch.getValue() - 1);
 			
 			JSONArray matches = new JSONArray();
 			
